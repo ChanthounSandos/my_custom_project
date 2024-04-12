@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_custom_project/loginScreen.dart';
 
@@ -25,11 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 color: Color.fromRGBO(0, 105, 148, 2),
               ),
-              accountName: Text("Sandos Chanthoun"),
-              accountEmail: Text("@chanthoun_sandos"),
+              accountName: Text(FirebaseAuth.instance.currentUser?.displayName ?? ""),
+              accountEmail: Text(FirebaseAuth.instance.currentUser?.email ?? ""),
               currentAccountPicture: CircleAvatar(
-                    backgroundImage: AssetImage("images/profile.png"),
-                  ),
+                backgroundImage: AssetImage("images/profile.png"),
+              ),
             ),
             ListTile(
               leading: Icon(Icons.mode_night_outlined, color: Colors.white,),
@@ -54,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: Icon(Icons.logout_outlined, color: Colors.red,),
               title: Text("LogOut", style: TextStyle(color: Colors.red),),
               onTap: (){
+                FirebaseAuth.instance.signOut();
                 alert_logout(context);
               },
             ),

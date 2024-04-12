@@ -12,9 +12,11 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   late String email;
   late String pwd;
+  late String username;
   final FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController emailcontroller = new TextEditingController();
   TextEditingController pwdcontroller = new TextEditingController();
+  TextEditingController usernamecontroller = new TextEditingController();
   bool isVisible = true;
 
   @override
@@ -51,7 +53,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width-50,
-                      height: 300,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
@@ -64,6 +65,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
+                            TextFormField(
+                              controller: usernamecontroller,
+                              style: TextStyle(fontSize: 16),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(20),),
+                                hintText: "Username",
+                                prefixIcon: Icon(Icons.person, color: Colors.grey,),
+                              ),
+                              onChanged: (value){
+                                username = value;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
                             TextFormField(
                               controller: emailcontroller,
                               style: TextStyle(fontSize: 16),
@@ -139,10 +155,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> doSignup(BuildContext context) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: pwd);
+      var credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: pwd);
+      await credential.user?.updateDisplayName(username);
+
       alert_success(context);
       emailcontroller.clear();
       pwdcontroller.clear();
+      usernamecontroller.clear();
       Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
     } on FirebaseAuthException catch(e) {
       alert_fail(context, e.message ?? "");

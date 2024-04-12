@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   firebase_core: ^2.28.0
   firebase_auth: ^4.19.0
+  cloud_firestore: ^4.16.1
+  http: ^1.2.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -76,6 +78,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: EagleLake
+      fonts:
+        - asset: fonts/EagleLake-Regular.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

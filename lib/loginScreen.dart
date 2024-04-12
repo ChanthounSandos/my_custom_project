@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_custom_project/homeScreen.dart';
 import 'package:my_custom_project/signUpScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +12,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isVisible = true;
+  late String email;
+  late String pwd;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var emailcontroller = new TextEditingController();
+  var pwdcontroller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text("Welcome Back", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),),
+                          Text("Welcome Back", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "EagleLake"),),
                         ],
                       ),
                     ),
@@ -61,17 +68,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             TextFormField(
+                              controller: emailcontroller,
                               style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(20),),
                                 hintText: "Email",
                                 prefixIcon: Icon(Icons.email_sharp, color: Colors.grey,),
                               ),
+                              onChanged: (value){
+                                email = value;
+                              },
                             ),
                             SizedBox(
                               height: 10,
                             ),
                             TextFormField(
+                              controller: pwdcontroller,
                               obscureText: isVisible,
                               style: TextStyle(fontSize: 16),
                               decoration: InputDecoration(
@@ -84,6 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 }, icon: isVisible?Icon(Icons.visibility):Icon(Icons.visibility_off))
                               ),
+                              onChanged: (value){
+                                pwd = value;
+                              },
                             ),
                             SizedBox(
                               height: 10,
@@ -92,7 +107,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 width: double.infinity,
                                 height: 50,
                                 child: ElevatedButton(
-                                  onPressed: (){},
+                                  onPressed: () async{
+                                    await doSignIn(context);
+                                  },
                                   child: Text("Sign In", style: TextStyle(color: Colors.white),),
                                   style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(0, 105, 148, 1)),
                                 )
@@ -118,9 +135,40 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ],
           ),
-      
         ],
       ),
     );
   }
+
+  Future<void> doSignIn(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: pwd);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      emailcontroller.clear();
+      pwdcontroller.clear();
+    } on FirebaseAuthException catch(e) {
+      alert_fail(context, e.message ?? "");
+    }
+  }
+
+  void alert_fail(BuildContext context, String message){
+    showDialog(context: context, builder: (context){
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Column(
+          children: [
+            Icon(Icons.error, color: Colors.red, size: 50,),
+          ],
+        ),
+        content: Text(message, textAlign: TextAlign.center),
+        actions: [
+          ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Ok")
+          )
+        ],
+      );
+    });
+  }
+
 }

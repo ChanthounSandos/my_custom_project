@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_custom_project/loginScreen.dart';
 import 'package:my_custom_project/signUpScreen.dart';

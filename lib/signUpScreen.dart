@@ -25,7 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           Container(
             height: 350,
-            color: Color.fromRGBO(0, 105, 148, 1),
+            color: Color.fromRGBO(91, 171, 236, 1),
           ),
           ListView(
             children: [
@@ -42,7 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text("Registration", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),),
+                          Text("Registration", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "EagleLake"),),
                         ],
                       ),
                     ),
@@ -108,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     await doSignup(context);
                                   },
                                   child: Text("Sign Up", style: TextStyle(color: Colors.white),),
-                                  style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(0, 105, 148, 1)),
+                                  style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(91, 171, 236, 1)),
                                 )
                             ),
                             SizedBox(
@@ -141,8 +141,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: pwd);
       alert_success(context);
+      emailcontroller.clear();
+      pwdcontroller.clear();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
     } on FirebaseAuthException catch(e) {
-      alert_unsuccess(context, e.message ?? "");
+      alert_fail(context, e.message ?? "");
     }
   }
 
@@ -165,7 +168,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     });
   }
-  void alert_unsuccess(BuildContext context, String message){
+  void alert_fail(BuildContext context, String message){
     showDialog(context: context, builder: (context){
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
